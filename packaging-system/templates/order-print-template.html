@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Print - Corrugated Box Production</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 20px;
+        }
+        .company-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .order-title {
+            font-size: 20px;
+            margin: 15px 0;
+        }
+        .order-details {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        .order-details th, .order-details td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .order-details th {
+            background-color: #f2f2f2;
+        }
+        .box-specs {
+            margin-top: 30px;
+        }
+        .signature-section {
+            margin-top: 50px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .signature-box {
+            width: 200px;
+            border-top: 1px solid #333;
+            text-align: center;
+            padding-top: 5px;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+        }
+        @media print {
+            .no-print {
+                display: none;
+            }
+            body {
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="company-name">ABC Corrugated Box Manufacturing</div>
+        <div>123 Industrial Area, City - 123456</div>
+        <div>Phone: +91 1234567890 | Email: info@abccorrugated.com</div>
+        
+        <div class="order-title">PRODUCTION ORDER</div>
+    </div>
+
+    <table class="order-details">
+        <tr>
+            <th>Job Card No:</th>
+            <td id="job-card-no">JC-2023-001</td>
+            <th>Order Date:</th>
+            <td id="order-date">2023-12-01</td>
+        </tr>
+        <tr>
+            <th>Party Name:</th>
+            <td id="party-name">ABC Electronics</td>
+            <th>Party PO No:</th>
+            <td id="party-po">PO-1234</td>
+        </tr>
+        <tr>
+            <th>Item Name:</th>
+            <td id="item-name" colspan="3">TV Packaging Box</td>
+        </tr>
+        <tr>
+            <th>Delivery Date:</th>
+            <td id="delivery-date">2023-12-15</td>
+            <th>Status:</th>
+            <td id="order-status">Pending</td>
+        </tr>
+    </table>
+
+    <div class="box-specs">
+        <h3>Box Specifications</h3>
+        <table class="order-details">
+            <tr>
+                <th>Ply</th>
+                <td id="ply">3 Ply</td>
+                <th>GSM Type</th>
+                <td id="gsm-type">B (Bottom)</td>
+            </tr>
+            <tr>
+                <th>GSM Value</th>
+                <td id="gsm-value">150</td>
+                <th>Box Quantity</th>
+                <td id="box-qty">1,000</td>
+            </tr>
+            <tr>
+                <th>Box Size (L×W×H)</th>
+                <td id="box-size">300 × 200 × 150 mm</td>
+                <th>Thickness</th>
+                <td id="box-thickness">5 mm</td>
+            </tr>
+            <tr>
+                <th>Has Decal</th>
+                <td id="has-decal">No</td>
+                <th>Bundle Quantity</th>
+                <td id="bundle-qty">50</td>
+            </tr>
+            <tr id="decal-row" style="display: none;">
+                <th>Decal Details</th>
+                <td colspan="3" id="decal-details"></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="box-specs">
+        <h3>Material Requirements</h3>
+        <table class="order-details">
+            <tr>
+                <th>Material Type</th>
+                <th>GSM</th>
+                <th>Estimated Weight (kg)</th>
+                <th>Notes</th>
+            </tr>
+            <tr>
+                <td id="material-type">Kraft Paper - Bottom</td>
+                <td id="material-gsm">B-150</td>
+                <td id="material-weight">54.00</td>
+                <td id="material-notes">Includes 10% wastage</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="signature-section">
+        <div class="signature-box">
+            Prepared By<br>
+            <span id="prepared-by">Admin</span>
+        </div>
+        <div class="signature-box">
+            Approved By<br>
+            ____________________
+        </div>
+        <div class="signature-box">
+            Production Incharge<br>
+            ____________________
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>This is a computer generated document. No signature is required.</p>
+        <p>Printed on: <span id="print-date">2023-12-05 14:30</span></p>
+        <button class="no-print" onclick="window.print()">Print Order</button>
+        <button class="no-print" onclick="window.close()">Close</button>
+    </div>
+
+    <script>
+        // This would be populated by the main application when opening the print template
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get order data from URL parameters or parent window
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderData = urlParams.size > 0 ? Object.fromEntries(urlParams.entries()) : 
+                window.opener ? window.opener.getCurrentOrderData() : {};
+            
+            // Populate the template with order data
+            if (orderData) {
+                document.getElementById('job-card-no').textContent = orderData.jobCard || '';
+                document.getElementById('order-date').textContent = orderData.date || '';
+                document.getElementById('party-name').textContent = orderData.partyName || '';
+                document.getElementById('party-po').textContent = orderData.partyPo || '';
+                document.getElementById('item-name').textContent = orderData.itemName || '';
+                document.getElementById('delivery-date').textContent = orderData.deliveryDate || '';
+                document.getElementById('order-status').textContent = orderData.status || '';
+                
+                document.getElementById('ply').textContent = orderData.ply ? `${orderData.ply} Ply` : '';
+                document.getElementById('gsm-type').textContent = orderData.gsmType ? 
+                    `${orderData.gsmType} (${getGsmTypeName(orderData.gsmType)})` : '';
+                document.getElementById('gsm-value').textContent = orderData.gsmValue || '';
+                document.getElementById('box-qty').textContent = orderData.boxQty ? 
+                    Number(orderData.boxQty).toLocaleString() : '';
+                
+                if (orderData.boxSize) {
+                    document.getElementById('box-size').textContent = 
+                        `${orderData.boxSize.length} × ${orderData.boxSize.width} × ${orderData.boxSize.height} mm`;
+                    document.getElementById('box-thickness').textContent = 
+                        `${orderData.boxSize.thickness} mm`;
+                }
+                
+                const hasDecal = orderData.hasDecal === 'yes';
+                document.getElementById('has-decal').textContent = hasDecal ? 'Yes' : 'No';
+                if (hasDecal) {
+                    document.getElementById('decal-row').style.display = '';
+                    document.getElementById('decal-details').textContent = orderData.decalDetails || '';
+                }
+                
+                // Calculate and display bundle quantity
+                if (orderData.boxSize) {
+                    const bundleQty = calculateBundleQuantity(orderData.boxSize);
+                    document.getElementById('bundle-qty').textContent = bundleQty;
+                }
+                
+                // Set print date
+                const now = new Date();
+                document.getElementById('print-date').textContent = 
+                    now.toISOString().split('T')[0] + ' ' + 
+                    now.toTimeString().split(' ')[0].substring(0, 5);
+                
+                // Auto-print if opened in new window
+                if (urlParams.size > 0) {
+                    window.print();
+                }
+            }
+        });
+        
+        function getGsmTypeName(type) {
+            switch(type) {
+                case 'B': return 'Bottom';
+                case 'F': return 'Flute';
+                case 'T': return 'Top';
+                default: return type;
+            }
+        }
+        
+        function calculateBundleQuantity(boxSize) {
+            const volume = boxSize.length * boxSize.width * boxSize.height;
+            if (volume < 1000000) return 50;
+            if (volume < 5000000) return 25;
+            return 10;
+        }
+        // Listen for messages from the main window
+    window.addEventListener('message', function(event) {
+    if (event.origin !== window.location.origin) return;
+    
+    if (event.data.action === 'updateMaterialDetails') {
+        document.getElementById('material-details-section').innerHTML = event.data.html;
+        document.getElementById('material-weight').textContent = event.data.totalWeight.toFixed(2);
+    } else {
+        populatePrintTemplate(event.data);
+    }
+});
+
+    // If opened directly with URL parameters
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        if (urlParams.size > 0) {
+            const orderData = {};
+            urlParams.forEach((value, key) => {
+                // Handle nested objects like boxSize
+                if (key.startsWith('boxSize.')) {
+                    const prop = key.split('.')[1];
+                    if (!orderData.boxSize) orderData.boxSize = {};
+                    orderData.boxSize[prop] = isNaN(value) ? value : parseFloat(value);
+                } else {
+                    orderData[key] = isNaN(value) ? value : parseFloat(value);
+                }
+            });
+            populatePrintTemplate(orderData);
+        }
+    });
+
+    function populatePrintTemplate(orderData) {
+        if (!orderData) return;
+        
+        document.getElementById('job-card-no').textContent = orderData.jobCard || '';
+        document.getElementById('order-date').textContent = orderData.date || '';
+        document.getElementById('party-name').textContent = orderData.partyName || '';
+        document.getElementById('party-po').textContent = orderData.partyPo || '';
+        document.getElementById('item-name').textContent = orderData.itemName || '';
+        document.getElementById('delivery-date').textContent = orderData.deliveryDate || '';
+        document.getElementById('order-status').textContent = orderData.status || '';
+        
+        document.getElementById('ply').textContent = orderData.ply ? `${orderData.ply} Ply` : '';
+        document.getElementById('gsm-type').textContent = orderData.gsmType ? 
+            `${orderData.gsmType} (${getGsmTypeName(orderData.gsmType)})` : '';
+        document.getElementById('gsm-value').textContent = orderData.gsmValue || '';
+        document.getElementById('box-qty').textContent = orderData.boxQty ? 
+            Number(orderData.boxQty).toLocaleString() : '';
+        
+        if (orderData.boxSize) {
+            document.getElementById('box-size').textContent = 
+                `${orderData.boxSize.length} × ${orderData.boxSize.width} × ${orderData.boxSize.height} mm`;
+            document.getElementById('box-thickness').textContent = 
+                `${orderData.boxSize.thickness} mm`;
+        }
+        
+        const hasDecal = orderData.hasDecal === 'yes';
+        document.getElementById('has-decal').textContent = hasDecal ? 'Yes' : 'No';
+        if (hasDecal) {
+            document.getElementById('decal-row').style.display = '';
+            document.getElementById('decal-details').textContent = orderData.decalDetails || '';
+        }
+        
+        // Calculate and display bundle quantity
+        if (orderData.boxSize) {
+            const bundleQty = calculateBundleQuantity(orderData.boxSize);
+            document.getElementById('bundle-qty').textContent = bundleQty;
+        }
+        
+        // Calculate and display material requirements
+        if (orderData.gsmType && orderData.gsmValue && orderData.boxSize && orderData.boxQty) {
+            const weight = calculateTotalWeight(orderData);
+            document.getElementById('material-weight').textContent = weight.toFixed(2);
+            document.getElementById('material-type').textContent = 
+                `${getMaterialName(orderData.gsmType)} - ${getGsmTypeName(orderData.gsmType)}`;
+            document.getElementById('material-gsm').textContent = 
+                `${orderData.gsmType}-${orderData.gsmValue}`;
+        }
+        
+        // Set print date
+        const now = new Date();
+        document.getElementById('print-date').textContent = 
+            now.toISOString().split('T')[0] + ' ' + 
+            now.toTimeString().split(' ')[0].substring(0, 5);
+    }
+
+    function getGsmTypeName(type) {
+        switch(type) {
+            case 'B': return 'Bottom';
+            case 'F': return 'Flute';
+            case 'T': return 'Top';
+            default: return type;
+        }
+    }
+    
+    function getMaterialName(type) {
+        switch(type) {
+            case 'B': return 'Kraft Paper';
+            case 'F': return 'Flute Paper';
+            case 'T': return 'White Top';
+            default: return 'Material';
+        }
+    }
+    
+    function calculateBundleQuantity(boxSize) {
+        const volume = boxSize.length * boxSize.width * boxSize.height;
+        if (volume < 1000000) return 50;
+        if (volume < 5000000) return 25;
+        return 10;
+    }
+    
+    function calculateTotalWeight(order) {
+        // Simplified weight calculation - replace with your actual formula
+        const area = (order.boxSize.length * order.boxSize.width) / 1000000; // in m²
+        const weightPerBox = area * order.gsmValue / 1000; // in kg
+        const plyMultiplier = order.ply === 3 ? 1.2 : order.ply === 5 ? 1.5 : 1.8;
+        
+        return weightPerBox * order.boxQty * plyMultiplier * 1.1; // with 10% buffer
+    }
+    </script>
+</body>
+</html>

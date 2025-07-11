@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corrugated Box Production Tracker</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid">
+        <header class="d-flex justify-content-between align-items-center py-3 border-bottom">
+            <div class="d-flex align-items-center">
+            <img src="assets/images/logo.png" alt="Company Logo" class="logo-img me-3" height="60">
+            <h1>Corrugated Box Production Tracker</h1>
+            <div id="notification-bell" class="notification-bell"> 🔔 <span id="notification-count" class="badge bg-danger d-none">0</span></div>
+        </header>
+       </div>
+        <div class="row">
+            <!-- Navigation -->
+            <nav class="col-md-2 d-md-block sidebar bg-light">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <button class="nav-link active" id="dashboard-tab">Dashboard</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" id="orders-tab">Orders</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" id="production-tab">Production</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" id="inventory-tab">Inventory</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" id="reports-tab">Reports</button>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="col-md-10 ms-sm-auto px-md-4">
+                <!-- Dashboard Tab -->
+                <div id="dashboard-content" class="tab-content">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h2>Production Dashboard</h2>
+                        <div class="btn-toolbar mb-2 mb-md-0">
+                            <div class="btn-group me-2">
+                                <button type="button" class="btn btn-sm btn-outline-secondary">Today</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary">Week</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary">Month</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Pending Orders</h5>
+                                    <p class="card-text display-4" id="pending-orders">0</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">In Production</h5>
+                                    <p class="card-text display-4" id="in-production">0</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Ready for Delivery</h5>
+                                    <p class="card-text display-4" id="ready-delivery">0</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <h4>Upcoming Deliveries</h4>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-sm" id="delivery-table">
+                                <thead>
+                                    <tr>
+                                        <th>Job Card</th>
+                                        <th>Party Name</th>
+                                        <th>Box Qty</th>
+                                        <th>Delivery Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Filled by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Orders Tab -->
+                <div id="orders-content" class="tab-content d-none">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h2>Order Management</h2>
+                        <button class="btn btn-primary" id="add-order-btn">Add New Order</button>
+                    </div>
+
+                    <!-- Order List -->
+                    <div class="table-responsive">
+                        <table class="table table-striped table-sm" id="orders-table">
+                            <thead>
+                                <tr>
+                                    <th>SR NO</th>
+                                    <th>JOB CARD</th>
+                                    <th>DATE</th>
+                                    <th>PARTY NAME</th>
+                                    <th>BOX SIZE</th>
+                                    <th>BOX QTY</th>
+                                    <th>DELIVERY DATE</th>
+                                    <th>STATUS</th>
+                                    <th>ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Filled by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Add Order Modal -->
+                    <div class="modal fade" id="orderModal" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Add New Order</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="order-form">
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label for="job-card" class="form-label">Job Card No</label>
+                                                <input type="text" class="form-control" id="job-card" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="order-date" class="form-label">Order Date</label>
+                                                <input type="date" class="form-control" id="order-date" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="party-name" class="form-label">Party Name</label>
+                                                <input type="text" class="form-control" id="party-name" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="party-po" class="form-label">Party PO No</label>
+                                                <input type="text" class="form-control" id="party-po">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label for="ply" class="form-label">Ply</label>
+                                                <select class="form-select" id="ply" required>
+                                                    <option value="3">3 Ply</option>
+                                                    <option value="5">5 Ply</option>
+                                                    <option value="7">7 Ply</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label for="gsm-type" class="form-label">GSM Type</label>
+                                                <select class="form-select" id="gsm-type" required>
+                                                    <option value="B">B (Bottom)</option>
+                                                    <option value="F">F (Flute)</option>
+                                                    <option value="T">T (Top)</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label for="gsm-value" class="form-label">GSM Value</label>
+                                                <input type="number" class="form-control" id="gsm-value" required>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label for="box-length" class="form-label">Length (mm)</label>
+                                                <input type="number" class="form-control" id="box-length" step="0.01" required>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label for="box-width" class="form-label">Width (mm)</label>
+                                                <input type="number" class="form-control" id="box-width" step="0.01" required>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label for="box-height" class="form-label">Height (mm)</label>
+                                                <input type="number" class="form-control" id="box-height" step="0.01" required>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label for="box-thickness" class="form-label">Thickness (mm)</label>
+                                                <input type="number" class="form-control" id="box-thickness" step="0.01" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="item-name" class="form-label">Item Name</label>
+                                                <input type="text" class="form-control" id="item-name" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="box-qty" class="form-label">Box Quantity</label>
+                                                <input type="number" class="form-control" id="box-qty" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="delivery-date" class="form-label">Delivery Date</label>
+                                                <input type="date" class="form-control" id="delivery-date" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="has-decal" class="form-label">Has Decal?</label>
+                                                <select class="form-select" id="has-decal">
+                                                    <option value="no">No</option>
+                                                    <option value="yes">Yes</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-12" id="decal-details-container" style="display: none;">
+                                                <label for="decal-details" class="form-label">Decal Details</label>
+                                                <textarea class="form-control" id="decal-details" rows="2"></textarea>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary" id="save-order-btn">Save Order</button>
+                                    <button type="button" class="btn btn-success d-none" id="print-order-btn">Print Order</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Add this section after the box specifications -->
+               <div id="material-details-section">
+                   <!-- Will be populated by JavaScript -->
+                </div>
+
+                <!-- Production Tab -->
+                <div id="production-content" class="tab-content d-none">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h2>Production Tracking</h2>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-striped table-sm" id="production-table">
+                            <thead>
+                                <tr>
+                                    <th>JOB CARD</th>
+                                    <th>PARTY NAME</th>
+                                    <th>BOX SIZE</th>
+                                    <th>BOX QTY</th>
+                                    <th>BUNDLE QTY</th>
+                                    <th>TOTAL WT (kg)</th>
+                                    <th>CUTTER DATE</th>
+                                    <th>CORROGATION DATE</th>
+                                    <th>DELIVERY DATE</th>
+                                    <th>STATUS</th>
+                                    <th>ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Filled by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Inventory Tab -->
+                <div id="inventory-content" class="tab-content d-none">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h2>Inventory Management</h2>
+                        <button class="btn btn-primary" id="add-material-btn">Add Material</button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-striped table-sm" id="inventory-table">
+                            <thead>
+                                <tr>
+                                    <th>MATERIAL ID</th>
+                                    <th>MATERIAL NAME</th>
+                                    <th>GSM TYPE</th>
+                                    <th>GSM VALUE</th>
+                                    <th>QUANTITY (kg)</th>
+                                    <th>MIN STOCK</th>
+                                    <th>STATUS</th>
+                                    <th>ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Filled by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Add Material Modal -->
+                    <div class="modal fade" id="materialModal" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Add Raw Material</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="material-form">
+                                        <div class="mb-3">
+                                            <label for="material-name" class="form-label">Material Name</label>
+                                            <input type="text" class="form-control" id="material-name" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="material-gsm-type" class="form-label">GSM Type</label>
+                                            <select class="form-select" id="material-gsm-type" required>
+                                                <option value="B">B (Bottom)</option>
+                                                <option value="F">F (Flute)</option>
+                                                <option value="T">T (Top)</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="material-gsm-value" class="form-label">GSM Value</label>
+                                            <input type="number" class="form-control" id="material-gsm-value" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="material-quantity" class="form-label">Initial Quantity (kg)</label>
+                                            <input type="number" class="form-control" id="material-quantity" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="material-min-stock" class="form-label">Minimum Stock Level (kg)</label>
+                                            <input type="number" class="form-control" id="material-min-stock" step="0.01" required>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary" id="save-material-btn">Save Material</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reports Tab -->
+                <div id="reports-content" class="tab-content d-none">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h2>Reports</h2>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                                Export
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#" id="export-orders">Orders Report</a></li>
+                                <li><a class="dropdown-item" href="#" id="export-production">Production Report</a></li>
+                                <li><a class="dropdown-item" href="#" id="export-inventory">Inventory Report</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5>Material Usage</h5>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="materialChart" width="400" height="300"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5>Order Status</h5>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="orderChart" width="400" height="300"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Monthly Production Summary</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-sm" id="monthly-report-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Month</th>
+                                            <th>Total Orders</th>
+                                            <th>Total Boxes</th>
+                                            <th>Total Weight (kg)</th>
+                                            <th>3-Ply Orders</th>
+                                            <th>5-Ply Orders</th>
+                                            <th>7-Ply Orders</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Filled by JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Notification Panel -->
+    <div class="notification-panel" id="notification-panel">
+        <div class="notification-header d-flex justify-content-between align-items-center">
+            <h5>Notifications</h5>
+            <button class="btn-close" id="close-notifications"></button>
+        </div>
+        <div class="notification-list" id="notification-list">
+            <!-- Notifications will be added here -->
+        </div>
+    </div>
+<!-- Before your script.js -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="assets/js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+{
+  "orders": [
+    {
+      "srNo": 1,
+      "jobCard": "JC-2023-001",
+      "date": "2023-12-01",
+      "partyName": "ABC Electronics",
+      "partyPo": "PO-1234",
+      "ply": 3,
+      "gsmType": "B",
+      "gsmValue": 150,
+      "boxSize": {
+        "length": 300,
+        "width": 200,
+        "height": 150,
+        "thickness": 5
+      },
+      "itemName": "TV Packaging Box",
+      "boxQty": 1000,
+      "deliveryDate": "2023-12-15",
+      "status": "Pending",
+      "decalType": "none",
+      "decalCoverage": 0,
+      "decalColors": null,
+      "decalEffects": []
+    },
+    {
+      "srNo": 2,
+      "jobCard": "JC-2023-002",
+      "date": "2023-12-05",
+      "partyName": "XYZ Appliances",
+      "partyPo": "PO-5678",
+      "ply": 5,
+      "gsmType": "F",
+      "gsmValue": 180,
+      "boxSize": {
+        "length": 400,
+        "width": 300,
+        "height": 200,
+        "thickness": 7
+      },
+      "itemName": "Refrigerator Box",
+      "boxQty": 500,
+      "deliveryDate": "2023-12-20",
+      "status": "In Production",
+      "decalType": "direct",
+      "decalCoverage": 30,
+      "decalColors": "4",
+      "decalEffects": ["foil"]
+    }
+  ],
+  "production": [
+    {
+      "jobCard": "JC-2023-001",
+      "cutterDate": "",
+      "corrogationDate": "",
+      "deliveryDate": "2023-12-15",
+      "status": "Pending"
+    },
+    {
+      "jobCard": "JC-2023-002",
+      "cutterDate": "2023-12-06",
+      "corrogationDate": "",
+      "deliveryDate": "2023-12-20",
+      "status": "Cutting"
+    }
+  ],
+  "inventory": [
+    {
+      "materialId": "MAT-001",
+      "materialName": "Kraft Paper - Bottom",
+      "gsmType": "B",
+      "gsmValue": 150,
+      "quantity": 500,
+      "minStock": 200
+    },
+    {
+      "materialId": "MAT-002",
+      "materialName": "Flute Paper",
+      "gsmType": "F",
+      "gsmValue": 180,
+      "quantity": 300,
+      "minStock": 150
+    },
+    {
+      "materialId": "MAT-003",
+      "materialName": "White Top",
+      "gsmType": "T",
+      "gsmValue": 200,
+      "quantity": 100,
+      "minStock": 150
+    }
+  ],
+  "notifications": [
+    {
+      "id": 1,
+      "message": "Low stock for Kraft Paper - Bottom (B-150). Current: 150.00kg, Minimum: 200.00kg",
+      "type": "warning",
+      "date": "2023-12-05T14:25:00",
+      "read": false
+    },
+    {
+      "id": 2,
+      "message": "Order JC-2023-002 requires material F-180 which is low in stock",
+      "type": "danger",
+      "date": "2023-12-05T10:15:00",
+      "read": false
+    }
+  ]
+}

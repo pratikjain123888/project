@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - Corrugated Box Production</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .notification-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .notification-header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .notification-header h2 {
+            margin: 0;
+            font-size: 20px;
+        }
+        .notification-list {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+        .notification-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: flex-start;
+        }
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+        .notification-icon {
+            margin-right: 15px;
+            font-size: 20px;
+        }
+        .notification-content {
+            flex: 1;
+        }
+        .notification-message {
+            margin: 0 0 5px 0;
+            font-size: 15px;
+        }
+        .notification-date {
+            font-size: 12px;
+            color: #777;
+        }
+        .notification-warning .notification-icon {
+            color: #f39c12;
+        }
+        .notification-danger .notification-icon {
+            color: #e74c3c;
+        }
+        .notification-info .notification-icon {
+            color: #3498db;
+        }
+        .notification-success .notification-icon {
+            color: #2ecc71;
+        }
+        .empty-notifications {
+            padding: 30px 20px;
+            text-align: center;
+            color: #777;
+        }
+        .print-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        @media print {
+            .print-button {
+                display: none;
+            }
+            body {
+                background-color: white;
+                padding: 0;
+            }
+            .notification-container {
+                box-shadow: none;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="notification-container">
+        <div class="notification-header">
+            <h2>System Notifications</h2>
+            <div id="notification-count">5 Unread</div>
+        </div>
+        
+        <ul class="notification-list" id="notification-list">
+            <!-- Sample notifications -->
+            <li class="notification-item notification-warning">
+                <div class="notification-icon">⚠️</div>
+                <div class="notification-content">
+                    <p class="notification-message">Kraft Paper - Bottom (B-150) is low on stock. Current: 150.00kg, Minimum: 200.00kg</p>
+                    <p class="notification-date">2023-12-05 14:25</p>
+                </div>
+            </li>
+            <li class="notification-item notification-danger">
+                <div class="notification-icon">❗</div>
+                <div class="notification-content">
+                    <p class="notification-message">No inventory found for material F-180 required for order JC-2023-002</p>
+                    <p class="notification-date">2023-12-05 10:15</p>
+                </div>
+            </li>
+            <li class="notification-item notification-info">
+                <div class="notification-icon">ℹ️</div>
+                <div class="notification-content">
+                    <p class="notification-message">New order JC-2023-003 has been created for XYZ Appliances</p>
+                    <p class="notification-date">2023-12-04 16:30</p>
+                </div>
+            </li>
+            <li class="notification-item notification-success">
+                <div class="notification-icon">✓</div>
+                <div class="notification-content">
+                    <p class="notification-message">Order JC-2023-001 has been marked as delivered</p>
+                    <p class="notification-date">2023-12-03 11:45</p>
+                </div>
+            </li>
+            <li class="notification-item notification-warning">
+                <div class="notification-icon">⚠️</div>
+                <div class="notification-content">
+                    <p class="notification-message">White Top (T-200) is now low on stock after fulfilling order JC-2023-001</p>
+                    <p class="notification-date">2023-12-03 11:46</p>
+                </div>
+            </li>
+        </ul>
+        
+        <div id="empty-notifications" class="empty-notifications" style="display: none;">
+            No notifications to display
+        </div>
+    </div>
+
+    <button class="print-button" onclick="window.print()">Print Notifications</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // This would be populated by the main application when opening the notification template
+            const notifications = window.opener ? window.opener.getNotifications() : [];
+            
+            const notificationList = document.getElementById('notification-list');
+            const emptyMessage = document.getElementById('empty-notifications');
+            
+            if (notifications.length === 0) {
+                notificationList.style.display = 'none';
+                emptyMessage.style.display = 'block';
+                document.getElementById('notification-count').textContent = '0 Unread';
+            } else {
+                // Clear sample notifications
+                notificationList.innerHTML = '';
+                
+                // Add real notifications
+                notifications.forEach(notification => {
+                    const item = document.createElement('li');
+                    item.className = `notification-item notification-${notification.type}`;
+                    
+                    let icon = 'ℹ️';
+                    if (notification.type === 'warning') icon = '⚠️';
+                    else if (notification.type === 'danger') icon = '❗';
+                    else if (notification.type === 'success') icon = '✓';
+                    
+                    item.innerHTML = `
+                        <div class="notification-icon">${icon}</div>
+                        <div class="notification-content">
+                            <p class="notification-message">${notification.message}</p>
+                            <p class="notification-date">${formatDateTime(notification.date)}</p>
+                        </div>
+                    `;
+                    
+                    notificationList.appendChild(item);
+                });
+                
+                const unreadCount = notifications.filter(n => !n.read).length;
+                document.getElementById('notification-count').textContent = 
+                    `${unreadCount} Unread`;
+            }
+            
+            // Mark as read when opened
+            if (window.opener) {
+                window.opener.markNotificationsAsRead();
+            }
+            
+            // Auto-close after 30 seconds if opened in new window
+            if (!window.opener) {
+                setTimeout(() => {
+                    window.close();
+                }, 30000);
+            }
+        });
+        
+        function formatDateTime(dateTimeString) {
+            if (!dateTimeString) return '';
+            const date = new Date(dateTimeString);
+            return date.toLocaleString();
+        }
+    </script>
+</body>
+</html>
